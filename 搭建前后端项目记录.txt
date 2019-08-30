@@ -1,0 +1,38 @@
+搭建项目vue+node+mongodb
+一、前后端分离
+1：搭建vue项目
+     vue init webpack  ”项目名称“
+2：安装axios 
+    npm install axios --save
+3：安装 mongoose
+    npm install mongoose --save
+4：安装bcrypt（加密算法）
+     npm install bcrypt--save
+5：安装sass
+     npm install node-sass --save-dev 
+     npm install sass-loader --save-dev
+     npm install style-loader --save-dev
+     安装完成后，修改webpack.base.config.js配置，在module->rules下添加
+      { // 编译识别sass! 
+           test: /\.scss$/,
+            loaders: ["style", "css", "sass"]
+        } 
+6: 安装mint-ui
+     npm install mint-ui --save
+
+二、搭建node
+1、在项目的根目录新建一个叫server的文件夹，用于放置Node的东西，在srver里创建三个js
+   a: index.js 入口文件
+   b: db.js 设置数据库相关
+   c: api.js 编写接口
+2：安装 express 
+    npm install express –save
+
+三、mongodb数据库
+1：启动数据库  mongod --dbpath D:\mongodb\data
+1：安装数据库（注意不要安装在文件夹名称含中文的文件夹中）在这儿我安装在d盘下的mongodb文件夹中，安装完成后，配置环境变量
+2：以管理员身份运行cmd,设置mongod.exe --dbpath "D:\mongodb\data" --logpath "D:\mongodb\log\mongodb.log" --install --serviceName "MongoDB" 
+3:net start MongoDB 启动服务 net stop mongodb关闭服务
+    
+
+

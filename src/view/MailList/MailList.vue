@@ -5,15 +5,18 @@
             <mt-button icon="search" slot="right"></mt-button>
        </mt-header>
        <ul class='user-box'>
-           <li class='user-item' v-for="(item,index) in userList" :key='index'>
-               <a>
-                    <img class='headPic' :src="item.sex=='男'?headPic1:headPic2" />
-                    <span class='name'>{{ item.name ?item.name:item.account }}</span>
-                    <mt-button type='primary'  size="small"  @click='deleteUser(item.account)'>删除</mt-button>
-                    
-               </a>
+           <template  v-for="(item,index) in userList" >
+            <li v-if='item.account!=account' class='user-item' :key='index' @click.stop='chat(item)'>
+                <a>
+                        <img class='headPic' :src="item.headPic" />
+                        <span class='name'>{{ item.name ?item.name:item.account }}</span>
+                        <mt-button type='primary'  size="small"  @click.stop='deleteUser(item.account)'>删除</mt-button>
+                        
+                </a>
             </li>
+           </template>
         </ul>
+        <ChatDetail v-if='chatDetailWin.visible' :userInfo = 'chatDetailWin.userInfo'/>
     </div>
 </template>
 <script>
@@ -21,13 +24,23 @@ import * as mailListApi from '@/webApi/MailList'
 import userPic1 from '../../assets/img/1.jpg'
 import userPic2 from '../../assets/img/2.jpg'
 import { MessageBox } from 'mint-ui';
+import ChatDetail from '../ChatList/ChatDetail'
 export default {
     name:'MailList',
+    components:{
+        ChatDetail
+    },
     data(){
         return {
           headPic1:userPic1,
           headPic2:userPic2,
-          userList:[]
+          userList:[],
+          account:this.$store.state.account,
+          chatDetailWin:{
+              visible:false,
+              userInfo:{}
+          }
+          
         }
     },
     created(){
@@ -62,6 +75,14 @@ export default {
             });
 
           
+        },
+        chat(item){
+          this.chatDetailWin.userInfo = {
+              account:item.account,
+              headPic:item.headPic,
+              name:item.name
+          }
+          this.chatDetailWin.visible =true;
         }
     }
 }

@@ -30,23 +30,40 @@ export default {
     name:'Home',
     data() {
        return {
-         selected:'ChatList'
+         selected:''
        }
     },
     created (){
-
+        
+        let name = this.$route.name;
+         if(name=='Home'){
+            name ='ChatList';
+         }
+        this.selected = name
     },
     methods:{
 
     },
     watch:{
         selected:function(val){
-           console.log(val)
            this.$router.push({name:val})
+        },
+        '$route': function (to, from) {
+            let name = to.name
+            if(to.name=='Home'){
+               this.selected ='ChatList';
+            }else{
+                 this.selected = to.name;
+            }
+
+           
         }
     }
+    
 }
 </script>
 <style lang="scss" scoped>
-
+  .Home-container{
+      font-size: 0.14rem;
+  }
 </style>

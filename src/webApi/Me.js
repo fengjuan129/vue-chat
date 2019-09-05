@@ -26,3 +26,12 @@ export function editPwd (params) {
         return res;
     })
 }
+/**
+ * 修改头像
+ */
+export function editHeadPic (params) {
+    return axios.post('/api/login/editHeadPic', params)
+    .then(res => {
+        return res.data;
+    })
+}

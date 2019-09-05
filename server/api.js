@@ -2,8 +2,14 @@
 const models = require('./db');
 const express = require('express');
 const router = express.Router();
+// 引入文件模块
+const fs = require('fs');
+let path = require('path');
+const {resolve} = require('path')
 
 /************** 创建(create) 读取(get) 更新(update) 删除(delete) **************/
+
+
 
 // 创建账号接口
 router.post('/api/login/createAccount',(req,res) => {
@@ -12,6 +18,7 @@ router.post('/api/login/createAccount',(req,res) => {
         account : req.body.account,
         password : req.body.password,
         name: req.body.account,
+        headPic:req.body.headPic
     };
     // 验证用户名是否重复
     models.Login.findOne({ account:newAccount.account},function(err,data){
@@ -209,5 +216,95 @@ router.post('/api/login/editPwd',(req,res)=>{
         }
     })
     
+})
+// 修改头像
+router.post('/api/login/editHeadPic',(req,res)=>{
+    const headPicUrl =req.body.headPicUrl;
+    var base64Data = headPicUrl.replace(/^data:image\/\w+;base64,/, "");
+    var dataBuffer = new Buffer(base64Data, 'base64');
+    // console.log(path)
+    // console.log('__dirname : ' + __dirname)
+    // console.log('resolve   : ' + resolve('./'))
+    // console.log('cwd   : ' +  process.cwd())
+   
+    const dirname = __dirname+'\\img\\headPic.png';
+   // console.log('dirname   :'+ dirname)
+    fs.writeFile(dirname, dataBuffer, function(err) {
+        // const path = err.path;
+        // console.log(path)
+      
+        models.Login.update({account:req.body.account},{headPic:headPicUrl},(err,data)=>{
+            if (err) {
+                res.send(err);
+            } else {
+                if(!data){
+                    let resData ={
+                        state:0,
+                        errNum:1,
+                        errStr:'修改失败'
+                    }
+                    res.send(resData)
+                } else{
+                    data.state =1;
+                    res.send(data)
+                    
+                }
+            }
+        })
+        
+    });   
+})
+// 获取聊天信息详情列表
+router.get('/api/chat/getChatDetailList',(req,res) => {
+     const sendAccount = req.query.sendAccount;
+     const targetAccount = req.query.targetAccount;
+     console.log(sendAccount)
+    // 通过模型去查找数据库
+    models.chatListDitale.find({$or:[{"sendAccount":sendAccount,targetAccount:targetAccount},{"sendAccount": targetAccount,targetAccount:sendAccount}]},(err,data) => {
+        if (err) {
+            res.send(err);
+        } else {
+            data.state =1;
+            res.send(data);
+        }
+    });
+});
+// 获取群聊聊天信息详情列表
+router.get('/api/chat/getGroupList',(req,res) => {
+    const room = req.query.room;
+    console.log(room)
+   // 通过模型去查找数据库
+   models.chatGroupList.find({room},(err,data) => {
+       if (err) {
+           res.send(err);
+       } else {
+           data.state =1;
+           res.send(data);
+       }
+   });
+});
+// 删除聊天信息
+router.get('/api/chat/deleteChatDetailList',(req,res)=>{
+    const sendAccount = req.query.sendAccount;
+     const targetAccount = req.query.targetAccount;
+     models.chatListDitale.remove({$or:[{"sendAccount":sendAccount,targetAccount:targetAccount},{"sendAccount": targetAccount,targetAccount:sendAccount}]},(err,data)=>{
+        if (err) {
+            res.send(err);
+        } else {
+            if(!data){
+                let resData ={
+                    state:0,
+                    errNum:1,
+                    errStr:'用户不存在'
+                }
+               res.send(resData)
+            } else{
+              
+                data.state =1;
+                res.send(data)
+               
+           }
+        }
+    })
 })
 module.exports = router;

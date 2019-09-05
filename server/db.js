@@ -14,12 +14,39 @@ const loginSchema = mongoose.Schema({
     name:String,
     age:String,
     sex:String,
-    brithday:String
+    brithday:String,
+    headPic:String
+});
+
+const chatListDitalSchema = mongoose.Schema({
+    img: String,
+    msg: String,
+    src: String,
+    time: String,
+    type: String,
+    sendAccount: String,
+    targetAccount:String,
+    headPic:String,
+       
+});
+const chatGroupListSchema = mongoose.Schema({
+    img: String,
+    msg: String,
+    src: String,
+    time: String,
+    type: String,
+    sendAccount: String,
+    sendName:String,
+    headPic:String,
+    room:String,
+       
 });
 
 /************** 定义模型Model **************/
 const Models = {
-    Login : mongoose.model('Login',loginSchema)
+    Login : mongoose.model('Login',loginSchema),
+    chatListDitale: mongoose.model('chatListDitale',chatListDitalSchema),
+    chatGroupList: mongoose.model('chatGroupList',chatGroupListSchema),
 }
 
 module.exports = Models;

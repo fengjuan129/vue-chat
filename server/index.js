@@ -10,6 +10,12 @@ const bodyParser = require('body-parser')
 const express = require('express');
 const app = express();
 
+
+var http = require('http');
+var server = require('http').Server(app)
+var io = require('socket.io')(server);
+
+  
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(api);
@@ -21,5 +27,34 @@ app.get('*', function(req, res) {
     res.send(html)
 })
 // 监听8088端口
-app.listen(8088);
-console.log('success listen…………');
+server.listen(8088,()=>{
+    console.log('server running at 127.0.0.1:3000');
+});
+
+const models = require('./db');
+io.on('connection', (socket) =>{
+    socket.on('sendMessage', (msg) =>{
+        console.log(msg)
+        const saveChatDetailList = new models.chatListDitale(msg);
+        saveChatDetailList.save((err,data) => {
+            // if (err) {
+            //     res.send(err);
+            // } else {
+            //     res.send({state:1});
+            // }
+        });
+        io.emit('receiveMessage', msg);
+    });
+    socket.on('sendGroupMessage',(msg)=>{
+        const saveChatGroupList = new models.chatGroupList(msg);
+        saveChatGroupList.save((err,data) => {
+            if (err) {
+                io.emit('receiveGroupMessage', err);
+            } else {
+                io.emit('receiveGroupMessage', msg);
+            }
+        });
+        
+    })
+    
+  });

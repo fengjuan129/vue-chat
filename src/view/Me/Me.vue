@@ -14,9 +14,11 @@
            <div class='list-item' @click="editInfo">
                <i class='iconfont icon-icon-test7'></i>修改信息
             </div>
-           <div class='list-item'>
+           <div class='list-item' @click='editHeadPic'>
                <i class='iconfont icon-icon-test45'></i>
                修改图像
+                
+               
             </div>
            <div class='list-item' >
                <i class='iconfont icon-icon-test16'></i>
@@ -25,31 +27,40 @@
             <div class='list-item' @click='editPwd'>
                <i class='iconfont icon-icon-test38'></i>
                修改密码
+              
             </div>
        </div>
         <mt-button type="primary" @click="loginout" class='loginout'>退出</mt-button>
         <!-- 修改密码 -->
         <EditPwd v-if='popupEditPwdVisible' @close ='closePwd'/>
         <EditPop v-if='popupEditVisible' @close ='closeEditPop' :userInfo='userInfo'/>
+        <UpHeadPic v-if='popupUpHeadPicVisible' 
+         @save ='saveHeadPic'
+         @close ='closeHeadPic'
+        />
     </div>
 </template>
 <script>
 import userPic1 from '../../assets/img/1.jpg'
-import userPic2 from '../../assets/img/2.jpg'
+import userPic from '../../assets/img/5.jpeg'
 import EditPop from './EditPop'
 import EditPwd from './EditPwd'
+import UpHeadPic from './UpHeadPic'
 import * as meApi from '@/webApi/Me'
 export default {
     name:'MailList',
     components:{
         EditPop,
-        EditPwd
+        EditPwd,
+        UpHeadPic
     },
     data(){
         return {
+              
             headPic:'',
             popupEditVisible:false,
             popupEditPwdVisible:false,
+            popupUpHeadPicVisible:false,
             account:this.$store.state.account,
             userInfo:{}
            
@@ -60,6 +71,7 @@ export default {
       
     },
     methods:{
+        
         /**
          * 获取用户信息
          */
@@ -73,8 +85,7 @@ export default {
                     });
                }else{
                    this.userInfo = res.data;
-                 this.headPic = this.userInfo.sex=='男'?userPic1 :userPic2;
-                 console.log( this.headPic )
+                 this.headPic =res.data.headPic?res.data.headPic : userPic;
                   
                }
                
@@ -105,7 +116,33 @@ export default {
         closePwd(){
             
             this.popupEditPwdVisible = false;
-            console.log(this.popupEditPwdVisible)
+
+        },
+        /**
+         * 修改头像
+         */
+        editHeadPic(){
+          this.popupUpHeadPicVisible = true;
+        },
+        saveHeadPic(data){
+          
+          meApi.editHeadPic({headPicUrl:data,account:this.account})
+          .then((res=>{
+
+                this.$toast({
+                    message: '修改成功',
+                    iconClass: 'icon icon-success'
+                });
+                this.headPic =data;
+                this.closeHeadPic();
+
+               
+          }))
+          
+          
+        },
+        closeHeadPic(){
+            this.popupUpHeadPicVisible = false;
         },
         /**
          * 退出

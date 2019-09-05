@@ -1,6 +1,22 @@
-# hhhhhhhhhh
+# vue-chat
 
 > a vue chat demo
+# 功能
+1、注册登录功能
+2、聊天功能（群聊、单聊）
+3、通讯录删除、查看
+4、用户信息修改（密码、用户信息、头像）
+5、图片发送
+6、发送表情
+
+# 项目使用技术栈
+1、前端 vue，vue-router ,vuex
+2、后端 nodejs，express
+3、数据库 mongodb (使用mongoose进行数据库操作)
+4、通讯 websocket
+
+# 项目使用环境
+Dev环境: MongoDB、Node 8.5.0+、Npm 5.3.0+
 
 ## Build Setup
 
